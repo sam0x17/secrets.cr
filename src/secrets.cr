@@ -1,12 +1,12 @@
 require "aes"
 require "yaml"
 
-class SecretStore
+class Secrets
   AES_BITS = 256
   KEY_SIZE = 32
   IV_SIZE = 32
 
-  class_getter stores : Hash(String, SecretStore) = Hash(String, SecretStore).new
+  class_getter stores : Hash(String, Secrets) = Hash(String, Secrets).new
   class_property default_stores_dir : Path = Path["./secrets"]
   class_property default_keys_dir : Path = Path["."]
 
@@ -71,9 +71,9 @@ class SecretStore
     if File.exists?(store_path)
       data = File.read(store_path)
       key = File.read(key_path)
-      store = SecretStore.new(name, key, data)
+      store = Secrets.new(name, key, data)
     else
-      store = SecretStore.new(name)
+      store = Secrets.new(name)
     end
     store.store_path = store_path
     store.key_path = key_path

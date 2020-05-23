@@ -31,16 +31,16 @@ followed by the encrypted text.
 require "secrets"
 
 # creates default stores named staging and production
-SecretStore.register(:staging)
-SecretStore.register(:production)
+Secrets.register(:staging)
+Secrets.register(:production)
 
-SecretStore[:staging][:API_KEY] = "555-555-ASDF-445"
-SecretStore[:staging]["some other key"] = "8j98ajsdf"
+Secrets[:staging][:API_KEY] = "555-555-ASDF-445"
+Secrets[:staging]["some other key"] = "8j98ajsdf"
 
 # writes encryption key to .staging_secret_key and encrypted
 # secrets to secrets/staging_secrets.enc.yml
-SecretStore[:staging].save
+Secrets[:staging].save
 
 # on a subsequent run, this will load the previously saved secrets
-SecretStore.register(:staging)
+Secrets.register(:staging)
 ```
