@@ -31,8 +31,8 @@ followed by the encrypted text.
 require "secrets"
 
 # creates default stores named staging and production
-Secrets.register(:staging)
-Secrets.register(:production)
+Secrets.register(:staging, create: true)
+Secrets.register(:production, create: true)
 
 Secrets[:staging][:API_KEY] = "555-555-ASDF-445"
 Secrets[:staging]["some other key"] = "8j98ajsdf"
@@ -43,7 +43,8 @@ Secrets[:production][:something] = "something else"
 Secrets[:staging].save
 
 # on a subsequent run, this will load the previously saved staging secrets
-Secrets.register(:staging)
+Secrets.register(:staging) # => returns instance of Secrets for staging
+Secrets.register(:shared) # => returns false as we haven't saved shared secrets
 ```
 
 Note: each time you `save` an secret store, you will get differing file
