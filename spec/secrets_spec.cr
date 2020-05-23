@@ -1,4 +1,5 @@
 require "./spec_helper"
+require "file_utils"
 
 describe Secrets do
   it "generates appropriate encryption key" do
@@ -26,5 +27,7 @@ describe Secrets do
     Secrets.stores.clear
     Secrets.register(:production)
     Secrets[:production]["SOME_API_KEY"].should eq "ja89dj98fjam89mdsioj"
+    FileUtils.rm_rf(Secrets.default_stores_dir.to_s)
+    File.delete(Secrets[:production].key_path.not_nil!)
   end
 end
