@@ -1,6 +1,5 @@
 require "aes"
 require "yaml"
-require "file_utils"
 
 class SecretStore
   AES_BITS = 256
@@ -8,14 +7,14 @@ class SecretStore
   IV_SIZE = 32
 
   class_getter stores : Hash(String, SecretStore) = Hash(String, SecretStore).new
-  class_property default_stores_dir : String = "./secrets"
-  class_property default_keys_dir : String = "."
+  class_property default_stores_dir : Path = Path["./secrets"]
+  class_property default_keys_dir : Path = Path["."]
 
   getter name : String
   setter encryption_key : String
   getter data : Hash(String, String)
-  property store_path : String?
-  property key_path : String?
+  property store_path : Path?
+  property key_path : Path?
   @aes : AES
 
   def initialize(@name)
@@ -59,14 +58,16 @@ class SecretStore
     File.write(key_path.not_nil!, @encryption_key) unless File.exists?(key_path.not_nil!)
   end
 
-  def self.register(name : Symbol | String, store_path : String? = nil, key_path : String? = nil)
+  def self.register(name : Symbol | String, store_path : String | Path | Nil = nil, key_path : String | Path | Nil = nil)
     name = name.to_s.downcase
-    store_path ||= Path[default_stores_dir].join("#{name}_secrets.yml").to_s
-    key_path ||= Path[default_keys_dir].join(".#{name}_secret_key").to_s
-    stores_dir = Path[store_path].parent.to_s
-    keys_dir = Path[key_path].parent.to_s
-    FileUtils.mkdir_p(stores_dir)
-    FileUtils.mkdir_p(keys_dir)
+    store_path ||= default_stores_dir.join("#{name}_secrets.yml")
+    key_path ||= default_keys_dir.join(".#{name}_secret_key")
+    store_path = Path[store_path] if store_path.is_a?(String)
+    key_path = Path[key_path] if key_path.is_a?(String)
+    stores_dir = store_path.parent
+    keys_dir = key_path.parent
+    Dir.mkdir_p(stores_dir)
+    Dir.mkdir_p(keys_dir)
     if File.exists?(store_path)
       data = File.read(store_path)
       key = File.read(key_path)
