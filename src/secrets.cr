@@ -20,7 +20,7 @@ class Secrets
   def initialize(@name)
     @data = Hash(String, String).new
     @aes = AES.new(AES_BITS)
-    @encryption_key = String.new(@aes.@key)
+    @encryption_key = String.new(@aes.key)
   end
 
   def initialize(@name, @encryption_key, data : String)
