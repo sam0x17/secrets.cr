@@ -1,3 +1,5 @@
+/secrets
+.*_secret_key
 /docs/
 /lib/
 /bin/

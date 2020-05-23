@@ -7,9 +7,15 @@ class SecretStore
   KEY_SIZE = 32
   IV_SIZE = 32
 
+  class_getter stores : Hash(String, SecretStore) = Hash(String, SecretStore).new
+  class_property default_stores_dir : String = "./secrets"
+  class_property default_keys_dir : String = "."
+
   getter name : String
   setter encryption_key : String
   getter data : Hash(String, String)
+  property store_path : String?
+  property key_path : String?
   @aes : AES
 
   def initialize(@name)
@@ -48,9 +54,10 @@ class SecretStore
     data[key.to_s] = value.to_s
   end
 
-  @@stores : Hash(String, SecretStore) = Hash(String, SecretStore).new
-  class_property default_stores_dir : String = "./secrets"
-  class_property default_keys_dir : String = "."
+  def save
+    File.write(store_path.not_nil!, encode)
+    File.write(key_path.not_nil!, @encryption_key) unless File.exists?(key_path.not_nil!)
+  end
 
   def self.register(name : Symbol | String, store_path : String? = nil, key_path : String? = nil)
     name = name.to_s.downcase
@@ -67,6 +74,8 @@ class SecretStore
     else
       store = SecretStore.new(name)
     end
+    store.store_path = store_path
+    store.key_path = key_path
     @@stores[name] = store
   end
 
