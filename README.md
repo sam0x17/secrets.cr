@@ -45,3 +45,15 @@ Secrets[:staging].save
 # on a subsequent run, this will load the previously saved staging secrets
 Secrets.register(:staging)
 ```
+
+## Best Practices
+* Do not commit encryption keys (e.g. `.production_secret_key`) to a repo
+* Distribute encryption keys to trusted developers if they need to have
+  access to the corresponding secrets
+* Use multiple secret stores for different types of secrets i.e. `production`,
+  `development`, and `shared` if you have secrets used by one or more environment
+* Integrate this library in some way with your app / dev environment so you have
+  a way to quickly edit encrypted secrets. Right now this is left up to the user,
+  however a later version may provide some sort of CLI for doing this similar
+  to [Amber](https://amberframework.org)'s `amber encrypt`.
+  
