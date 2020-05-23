@@ -36,11 +36,12 @@ Secrets.register(:production)
 
 Secrets[:staging][:API_KEY] = "555-555-ASDF-445"
 Secrets[:staging]["some other key"] = "8j98ajsdf"
+Secrets[:production][:something] = "something else"
 
 # writes encryption key to .staging_secret_key and encrypted
 # secrets to secrets/staging_secrets.enc.yml
 Secrets[:staging].save
 
-# on a subsequent run, this will load the previously saved secrets
+# on a subsequent run, this will load the previously saved staging secrets
 Secrets.register(:staging)
 ```
