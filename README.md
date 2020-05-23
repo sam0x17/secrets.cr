@@ -47,7 +47,7 @@ Secrets.register(:staging) # => returns instance of Secrets for staging
 Secrets.register(:shared) # => returns false as we haven't saved shared secrets
 ```
 
-Note: each time you `save` an secret store, you will get differing file
+Note: each time you `save` a secrets store, you will get differing file
 contents even if no secrets have been added, removed, or changed. This is
 a security feature and the result of us using nonces.
 
