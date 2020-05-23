@@ -2,6 +2,17 @@ require "aes"
 require "yaml"
 
 module Secrets
+  @@secret_environments : Hash(String, SecretEnvironment) = Hash(String, SecretEnvironment).new
+
+  def self.register_environment(name : String, path : String)
+    name = name.downcase
+    if File.exists?(path)
+      data = File.read(path)
+    else
+      env = SecretEnvironment.new(name)
+      
+  end
+
   class SecretEnvironment
     AES_BITS = 256
     KEY_SIZE = 32
