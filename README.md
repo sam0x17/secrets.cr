@@ -53,6 +53,8 @@ a security feature and the result of us using nonces.
 ## Best Practices
 * Do not commit encryption keys (e.g. `.production_secret_key`) to a repo!
 * Do not accidentally bake an encryption key into a public Docker image!
+* Do not commit code that directly sets secrets like above, obviously
+  this will add the secrets in plaintext form to your repo!
 * Distribute encryption keys to trusted developers if they need to have
   access to the corresponding secrets
 * Use multiple secret stores for different types of secrets i.e. `production`,
