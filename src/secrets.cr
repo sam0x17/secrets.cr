@@ -17,6 +17,9 @@ class Secrets
   property key_path : Path?
   @aes : AES
 
+  alias SymString = Symbol | String
+  alias PathString = Path | String
+
   def initialize(@name)
     @data = Hash(String, String).new
     @aes = AES.new(AES_BITS)
@@ -41,15 +44,15 @@ class Secrets
     String.new(mem.to_slice)
   end
 
-  def [](key : Symbol | String)
+  def [](key : SymString)
     data[key.to_s]
   end
 
-  def []?(key : Symbol | String)
+  def []?(key : SymString)
     data[key.to_s]?
   end
 
-  def []=(key : Symbol | String, value : Symbol | String)
+  def []=(key : SymString, value : SymString)
     data[key.to_s] = value.to_s
   end
 
@@ -58,7 +61,7 @@ class Secrets
     File.write(key_path.not_nil!, @encryption_key) unless File.exists?(key_path.not_nil!)
   end
 
-  def self.register(name : Symbol | String, store_path : String | Path | Nil = nil, key_path : String | Path | Nil = nil)
+  def self.register(name : SymString, store_path : PathString? = nil, key_path : PathString? = nil)
     name = name.to_s.downcase
     store_path ||= default_stores_dir.join("#{name}_secrets.enc.yml")
     key_path ||= default_keys_dir.join(".#{name}_secret_key")
@@ -80,12 +83,12 @@ class Secrets
     @@stores[name] = store
   end
 
-  def self.[](name : Symbol | String)
+  def self.[](name : SymString)
     name = name.to_s.downcase
     @@stores[name]
   end
 
-  def self.[]?(name : Symbol | String)
+  def self.[]?(name : SymString)
     name = name.to_s.downcase
     @@stores[name]?
   end
