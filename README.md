@@ -47,7 +47,8 @@ Secrets.register(:staging)
 ```
 
 ## Best Practices
-* Do not commit encryption keys (e.g. `.production_secret_key`) to a repo
+* Do not commit encryption keys (e.g. `.production_secret_key`) to a repo!
+* Do not accidentally bake an encryption key into a public Docker image!
 * Distribute encryption keys to trusted developers if they need to have
   access to the corresponding secrets
 * Use multiple secret stores for different types of secrets i.e. `production`,
@@ -56,4 +57,4 @@ Secrets.register(:staging)
   a way to quickly edit encrypted secrets. Right now this is left up to the user,
   however a later version may provide some sort of CLI for doing this similar
   to [Amber](https://amberframework.org)'s `amber encrypt`.
-  
+* Provide the necessary encryption keys when running deployments
