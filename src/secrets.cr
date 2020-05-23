@@ -60,7 +60,7 @@ class SecretStore
 
   def self.register(name : Symbol | String, store_path : String | Path | Nil = nil, key_path : String | Path | Nil = nil)
     name = name.to_s.downcase
-    store_path ||= default_stores_dir.join("#{name}_secrets.yml")
+    store_path ||= default_stores_dir.join("#{name}_secrets.enc.yml")
     key_path ||= default_keys_dir.join(".#{name}_secret_key")
     store_path = Path[store_path] if store_path.is_a?(String)
     key_path = Path[key_path] if key_path.is_a?(String)
