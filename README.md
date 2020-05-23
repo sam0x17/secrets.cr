@@ -46,6 +46,10 @@ Secrets[:staging].save
 Secrets.register(:staging)
 ```
 
+Note: each time you `save` an secret store, you will get differing file
+contents even if no secrets have been added, removed, or changed. This is
+a security feature and the result of us using nonces.
+
 ## Best Practices
 * Do not commit encryption keys (e.g. `.production_secret_key`) to a repo!
 * Do not accidentally bake an encryption key into a public Docker image!
