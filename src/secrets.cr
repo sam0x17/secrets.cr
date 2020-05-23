@@ -61,7 +61,7 @@ class Secrets
     File.write(key_path.not_nil!, @encryption_key) unless File.exists?(key_path.not_nil!)
   end
 
-  def self.register(name : SymString, store_path : PathString? = nil, key_path : PathString? = nil)
+  def self.register(name : SymString, store_path : PathString? = nil, key_path : PathString? = nil, auto_create : Bool = false)
     name = name.to_s.downcase
     store_path ||= default_stores_dir.join("#{name}_secrets.enc.yml")
     key_path ||= default_keys_dir.join(".#{name}_secret_key")
@@ -71,12 +71,14 @@ class Secrets
     keys_dir = key_path.parent
     Dir.mkdir_p(stores_dir)
     Dir.mkdir_p(keys_dir)
-    if File.exists?(store_path)
+    if File.exists?(store_path) && File.exists?(key_path)
       data = File.read(store_path)
       key = File.read(key_path)
       store = Secrets.new(name, key, data)
-    else
+    elsif auto_create
       store = Secrets.new(name)
+    else
+      return false
     end
     store.store_path = store_path
     store.key_path = key_path
