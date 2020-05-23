@@ -20,7 +20,7 @@ describe Secrets do
   end
 
   it "saves and loads files" do
-    Secrets.register(:production)
+    Secrets.register(:production, create: true)
     Secrets[:production][:SOME_API_KEY] = "ja89dj98fjam89mdsioj"
     Secrets[:production]["something else"] = "aj9sd8f8d"
     Secrets[:production].save
