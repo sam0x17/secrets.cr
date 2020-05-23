@@ -1,19 +1,31 @@
 require "aes"
 require "yaml"
+require "file_utils"
 
 module Secrets
-  @@secret_environments : Hash(String, SecretEnvironment) = Hash(String, SecretEnvironment).new
+  @@secret_stores : Hash(String, SecretStore) = Hash(String, SecretStore).new
+  class_property default_stores_dir : String = "./secrets"
+  class_property default_keys_dir : String = "."
 
-  def self.register_environment(name : String, path : String)
-    name = name.downcase
-    if File.exists?(path)
-      data = File.read(path)
+  def self.register_store(name : String, store_path : String? = nil, key_path : String? = nil)
+    name = name.downcase.snake_case
+    store_path ||= Path[default_stores_dir].join("#{name}_secrets.yml").to_s
+    key_path ||= Path[default_keys_dir].join(".#{name}_secret_key").to_s
+    stores_dir = Path[store_path].parent.to_s
+    keys_dir = Path[key_path].parent.to_s
+    FileUtils.mkdir_p(stores_dir)
+    FileUtils.mkdir_p(keys_dir)
+    if File.exists?(store_path)
+      data = File.read(store_path)
+      key = File.read(key_path)
+      store = SecretStore.new(name, key, data)
     else
-      env = SecretEnvironment.new(name)
-      
+      store = SecretStore.new(name)
+    end
+    @@secret_stores[name] = store
   end
 
-  class SecretEnvironment
+  class SecretStore
     AES_BITS = 256
     KEY_SIZE = 32
     IV_SIZE = 32
