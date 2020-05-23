@@ -1,4 +1,4 @@
-require "openssl"
+require "aes"
 
 module Secrets
   class SecretEnvironment
@@ -12,7 +12,7 @@ module Secrets
     end
 
     def initialize(@name, @encryption_key, data : String)
-      
+
     end
 
     def [](key : Symbol | String)
