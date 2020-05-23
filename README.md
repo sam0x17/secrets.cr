@@ -1,6 +1,8 @@
-# secrets
+# secrets.cr
 
-TODO: Write a description here
+Provides encrypted key-value stores that can be registered, saved, and loaded
+by name. Can be used to securely store environment-specific secrets directly
+in your repo.
 
 ## Installation
 
@@ -9,7 +11,7 @@ TODO: Write a description here
    ```yaml
    dependencies:
      secrets:
-       github: your-github-user/secrets
+       github: sam0x17/secrets.cr
    ```
 
 2. Run `shards install`
@@ -18,6 +20,7 @@ TODO: Write a description here
 
 ```crystal
 require "secrets"
+
 ```
 
 TODO: Write usage instructions here
