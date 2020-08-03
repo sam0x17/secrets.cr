@@ -33,7 +33,11 @@ class Secrets
     data = data[IV_SIZE..]
     @aes = AES.new(key, iv, AES_BITS)
     decrypted = String.new(@aes.decrypt(data))
-    yaml = YAML.parse(decrypted)
+    begin
+      yaml = YAML.parse(decrypted)
+    rescue YAML::ParseException
+      raise "Invalid YAML: This could be due to an invalid key, bad encoding on the key or secrets file, or just bad yaml!"
+    end
     @data = yaml.as_h.map { |k, v| [k.to_s, v.to_s] }.to_h
   end
 
