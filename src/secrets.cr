@@ -35,8 +35,9 @@ class Secrets
     decrypted = String.new(@aes.decrypt(data))
     begin
       yaml = YAML.parse(decrypted)
-    rescue YAML::ParseException
-      raise "Invalid YAML: This could be due to an invalid key, bad encoding on the key or secrets file, or just bad yaml!"
+    rescue ex : YAML::ParseException
+      puts "Invalid YAML: #{ex.message}"
+      raise "YAML::ParseException: This could be due to an invalid key, bad encoding on the key or secrets file, or just bad yaml!"
     end
     @data = yaml.as_h.map { |k, v| [k.to_s, v.to_s] }.to_h
   end
