@@ -3,8 +3,8 @@ require "yaml"
 
 class Secrets
   AES_BITS = 256
-  KEY_SIZE = 32
-  IV_SIZE = 32
+  KEY_SIZE =  32
+  IV_SIZE  =  32
 
   class_getter stores : Hash(String, Secrets) = Hash(String, Secrets).new
   class_property default_stores_dir : Path = Path["./secrets"]
@@ -32,13 +32,12 @@ class Secrets
     key = @encryption_key.as_slice
     data = data[IV_SIZE..]
     @aes = AES.new(key, iv, AES_BITS)
-    decrypted = String.new(@aes.decrypt(data))
     begin
-      yaml = YAML.parse(decrypted)
-    rescue ex : YAML::ParseException
-      puts "Invalid YAML: #{ex.message}"
-      raise "YAML::ParseException: This could be due to an invalid key, bad encoding on the key or secrets file, or just bad yaml!"
+      decrypted = String.new(@aes.decrypt(data))
+    rescue ex : AES::Error
+      raise "AES::Error: Failed to decrypt the data, this can be due to an invalid key or bad encoding on the key or secrets file"
     end
+    yaml = YAML.parse(decrypted)
     @data = yaml.as_h.map { |k, v| [k.to_s, v.to_s] }.to_h
   end
 
